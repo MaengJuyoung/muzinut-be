@@ -9,7 +9,8 @@ import nuts.muzinut.domain.member.Member;
 @Entity
 @Getter
 @NoArgsConstructor
-public class MusicCoorpArtist extends BaseTimeEntity {
+@Table(name = "music_corp_artist")
+public class MusicCoorpArtist {
 
     @Id
     @GeneratedValue
@@ -24,5 +25,10 @@ public class MusicCoorpArtist extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    // 생성자 및 기타 메소드...
+    // 연관 관계 메서드
+    public void addMusicCoorpArtist(Music music, Member member) {
+        this.music = music;
+        this.member = member;
+        music.getCoorpArtists().add(this);
+    }
 }

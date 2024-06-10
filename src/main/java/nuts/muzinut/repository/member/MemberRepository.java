@@ -1,7 +1,45 @@
 package nuts.muzinut.repository.member;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import nuts.muzinut.domain.member.Member;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+import java.util.List;
+
+@Repository
+public class MemberRepository {
+
+    @PersistenceContext
+    private EntityManager em;
+
+    public void save(Member member){
+        em.persist(member);
+    }
+
+    public Member findOne(Long id){
+        return em.find(Member.class, id);
+    }
+
+    public List<Member> findAll() {
+        return em.createQuery("select m from Member m", Member.class)
+                .getResultList();
+    }
+
+    public List<Member> findByNickname(String nickname) {
+        return em.createQuery("select m from Member m where m.nickname = :nickname", Member.class)
+                .setParameter("nickname", nickname)
+                .getResultList();
+    }
+
+    public void update(Member member) {
+        em.merge(member);
+    }
+
+    public void delete(Long id) {
+        Member member = em.find(Member.class, id);
+        if (member != null){
+            em.remove(member);
+        }
+    }
 }

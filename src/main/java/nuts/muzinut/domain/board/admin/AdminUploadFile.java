@@ -1,4 +1,4 @@
-package nuts.muzinut.domain.admin;
+package nuts.muzinut.domain.board.admin;
 
 import jakarta.persistence.*;
 import lombok.Getter;

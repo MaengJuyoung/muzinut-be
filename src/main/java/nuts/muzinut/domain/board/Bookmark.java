@@ -3,31 +3,34 @@ package nuts.muzinut.domain.board;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nuts.muzinut.domain.baseEntity.BaseBoardEntity;
-import nuts.muzinut.domain.baseEntity.BaseTimeEntity;
 import nuts.muzinut.domain.member.Member;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Table(name = "free_board")
-public class FreeBoard extends BaseBoardEntity {
+@NoArgsConstructor
+public class Bookmark {
 
     @Id
     @GeneratedValue
-    @Column(name = "free_board_id")
+    @Column(name = "bookmark_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String filename;
+    @Column(name = "board_id")
+    private Long boardId;
+
+    @Column(name = "board_type")
+    @Enumerated(EnumType.STRING)
+    private BoardType boardType;
 
     // 연관 관계 메서드
-    public void createFreeBoard(Member member){
+    public void addBookmark(Member member, Long boardId, BoardType boardType) {
         this.member = member;
-        member.getFreeBoards().add(this);
+        this.boardId = boardId;
+        this.boardType = boardType;
+        member.getBookmarks().add(this);
     }
 }

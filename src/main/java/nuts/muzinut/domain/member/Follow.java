@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Follow {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "following_id")
+    @GeneratedValue
+    @Column(name = "follow_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -22,9 +22,11 @@ public class Follow {
 
     private boolean notification;
 
-    public Follow(Member member, Long followingMemberId, boolean notification) {
+    // 연관 관계 메서드
+    public void createFollow(Member member, Long followingMemberId) {
         this.member = member;
         this.followingMemberId = followingMemberId;
-        this.notification = notification;
+        this.notification = true;
+        member.getFollowings().add(this);
     }
 }

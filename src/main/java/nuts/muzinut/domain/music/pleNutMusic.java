@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "playlist_music")
-public class PlaylistMusic {
+public class pleNutMusic {
     @Id
     @GeneratedValue
     @Column(name = "playlist_music_id")
@@ -16,15 +15,15 @@ public class PlaylistMusic {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "playlist_id")
-    private Playlist playlist;
+    private PleNut pleNut;
 
     @Column(name = "music_id")
-    private Long musicId;
+    private Long musicId; // 실제 음악 엔티티와의 연결은 생략하고, ID 참조로만 표현합니다.
 
-    // 연관 관계 메소드
-    public void addRecord(Playlist playlist, Music music) {
-        this.playlist = playlist;
+    // 연관 관계 메서드
+    public void addpleNutMusic(PleNut pleNut, Music music) {
+        this.pleNut = pleNut;
         this.musicId = music.getId();
-        playlist.getPlaylistMusics().add(this);
+        pleNut.getPleNutMusics().add(this);
     }
 }

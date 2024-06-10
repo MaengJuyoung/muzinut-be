@@ -3,7 +3,6 @@ package nuts.muzinut.repository.member;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import nuts.muzinut.domain.member.Member;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -35,9 +33,9 @@ class MemberRepositoryTest {
 
         //then
         List<Member> result = memberRepository.findAll();
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.getFirst().getEmail()).isEqualTo("email");
-        assertThat(result.getFirst().getPassword()).isEqualTo("password");
+        assertEquals(1, result.size());
+        assertEquals("email", result.get(0).getEmail());
+        assertEquals("password", result.get(0).getPassword());
     }
 
     @Test
@@ -50,11 +48,11 @@ class MemberRepositoryTest {
         memberRepository.save(member);
 
         //then
-        memberRepository.delete(member);
+        memberRepository.delete(member.getId());
         em.flush();
         em.clear();
 
         List<Member> result = memberRepository.findAll();
-        assertThat(result.size()).isEqualTo(0);
+        assertEquals(0, result.size());
     }
 }

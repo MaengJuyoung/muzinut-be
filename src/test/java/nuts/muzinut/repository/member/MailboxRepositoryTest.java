@@ -4,17 +4,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import nuts.muzinut.domain.member.Mailbox;
 import nuts.muzinut.domain.member.Member;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -43,7 +39,8 @@ class MailboxRepositoryTest {
 
         //then
         Optional<Mailbox> findMailbox = mailboxRepository.findById(mailbox.getId());
-        assertThat(findMailbox.get().getMember()).isEqualTo(member); //저장된 메일함의 멤버를 확인
+        assertTrue(findMailbox.isPresent()); // 저장된 메일함이 존재하는지 확인
+        assertEquals(member, findMailbox.get().getMember()); // 저장된 메일함의 멤버를 확인
     }
 
     @Test
@@ -61,7 +58,7 @@ class MailboxRepositoryTest {
 
         //then
         Optional<Mailbox> findMailbox = mailboxRepository.findById(mailbox.getId());
-        assertThat(findMailbox.isEmpty()).isTrue();
+        assertTrue(findMailbox.isEmpty());
     }
 
     /**
@@ -78,10 +75,10 @@ class MailboxRepositoryTest {
         mailboxRepository.save(mailbox);
 
         //when
-        memberRepository.delete(member);
+        memberRepository.delete(member.getId());
 
         //then
         Optional<Mailbox> findMailbox = mailboxRepository.findById(mailbox.getId());
-        assertThat(findMailbox.isEmpty()).isTrue(); //회원 삭제시 해당 회원의 메일함이 없다.
+        assertTrue(findMailbox.isEmpty()); //회원 삭제시 해당 회원의 메일함이 없다.
     }
 }

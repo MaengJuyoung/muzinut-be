@@ -12,14 +12,25 @@ import nuts.muzinut.domain.member.Member;
 public class Like {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "like_id")
     private Long id;
 
-    private Integer boardId;
-    private String boardType;
+    @Column(name = "board_id")
+    private Long boardId;
 
-    @ManyToOne
+    @Column(name = "board_type")
+    @Enumerated(EnumType.STRING)
+    private BoardType boardType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public Like(Long boardId, BoardType boardType, Member member) {
+        this.boardId = boardId;
+        this.boardType = boardType;
+        this.member = member;
+        member.getLikeList().add(this);
+    }
 }

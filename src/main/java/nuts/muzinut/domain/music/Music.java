@@ -3,6 +3,8 @@ package nuts.muzinut.domain.music;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nuts.muzinut.domain.baseEntity.BaseBoardEntity;
 import nuts.muzinut.domain.baseEntity.BaseTimeEntity;
 import nuts.muzinut.domain.member.Member;
 
@@ -10,28 +12,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor
-public class Music extends BaseTimeEntity {
+public class Music extends BaseBoardEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "music_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String albumName;
-    private String albumIntro;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id")
+    private Album album;
+
+    private String intro;
     private String article; // 가사
+
+    @Column(name = "music_origin_filename")
     private String musicOriginFilename;
+
+    @Column(name = "music_store_filename")
     private String musicStoreFilename;
-    private String albumImgOriginFilename;
-    private String albumImgStoreFilename;
-    private Integer view;
-    private Integer weeklyGood;
+
+    @Column(name = "music_img_origin_filename")
+    private String musicImgOriginFilename;
+
+    @Column(name = "music_img_store_filename")
+    private String musicImgStoreFilename;
+
 
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
     private List<MusicGenre> genres = new ArrayList<>();
@@ -39,18 +51,9 @@ public class Music extends BaseTimeEntity {
     @OneToMany(mappedBy = "music", cascade = CascadeType.ALL)
     private List<MusicCoorpArtist> coorpArtists = new ArrayList<>();
 
-    public Music(Member member, String albumName, String albumIntro, String article,
-                 String musicOriginFilename, String musicStoreFilename, String albumImgOriginFilename,
-                 String albumImgStoreFilename) {
+    // 연관 관계 메서드
+    public void createMusic(Member member) {
         this.member = member;
-        this.albumName = albumName;
-        this.albumIntro = albumIntro;
-        this.article = article;
-        this.musicOriginFilename = musicOriginFilename;
-        this.musicStoreFilename = musicStoreFilename;
-        this.albumImgOriginFilename = albumImgOriginFilename;
-        this.albumImgStoreFilename = albumImgStoreFilename;
-        this.view = 0;
-        this.weeklyGood = 0;
+        member.getMusicList().add(this);
     }
 }

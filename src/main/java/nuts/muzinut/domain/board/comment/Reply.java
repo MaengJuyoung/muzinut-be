@@ -1,4 +1,4 @@
-package nuts.muzinut.domain.comment;
+package nuts.muzinut.domain.board.comment;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,17 +12,24 @@ import nuts.muzinut.domain.member.Member;
 public class Reply extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "reply_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
 
     private String content;
+
+    // 연관 관계 메서드
+    public void addReply(String content, Comment comment) {
+        this.content = content;
+        this.comment = comment;
+        comment.getReplies().add(this);
+    }
 }
