@@ -29,4 +29,11 @@ public class CommentRepository {
     public void delete(Comment comment) {
         em.remove(em.contains(comment) ? comment : em.merge(comment));
     }
+
+    public void update(Long id, String newContent) {
+        Comment comment = em.find(Comment.class, id);
+        if(comment != null) {
+            comment.setContent(newContent);
+        }
+    }
 }

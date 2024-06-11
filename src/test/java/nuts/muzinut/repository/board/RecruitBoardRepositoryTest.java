@@ -1,5 +1,6 @@
 package nuts.muzinut.repository.board;
 
+import jakarta.persistence.EntityManager;
 import nuts.muzinut.domain.board.recruit.RecruitBoard;
 import nuts.muzinut.domain.member.Member;
 import nuts.muzinut.repository.member.MemberRepository;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,43 +22,45 @@ class RecruitBoardRepositoryTest {
     MemberRepository memberRepository;
     @Autowired
     RecruitBoardRepository recruitBoardRepository;
+    @Autowired
+    EntityManager em;
 
     @Test
     void save() {
-        // given: 테스트에 필요한 객체들을 생성 및 저장
+        // given
         Member member = new Member();
         memberRepository.save(member);
 
         RecruitBoard recruitBoard = new RecruitBoard();
         recruitBoard.createRecruitBoard(member);
 
-        // when: recruitBoard 객체를 저장
+        // when
         recruitBoardRepository.save(recruitBoard);
 
-        // then: 저장된 recruitBoard 객체를 조회하여 검증
+        // then
         Optional<RecruitBoard> findRecruitBoard = recruitBoardRepository.findById(recruitBoard.getId());
-        assertTrue(findRecruitBoard.isPresent());
-        assertEquals(recruitBoard, findRecruitBoard.get());
-        assertEquals(member, findRecruitBoard.get().getMember());
+        assertTrue(findRecruitBoard.isPresent()); // 저장된 RecruitBoard가 존재하는지 확인
+        assertEquals(recruitBoard, findRecruitBoard.get()); // 저장된 RecruitBoard가 올바른지 확인
+        assertEquals(member, findRecruitBoard.get().getMember()); // RecruitBoard와 연관된 Member가 올바른지 확인
     }
 
     @Test
     void delete() {
-        // given: recruitBoard 객체를 생성 및 저장
+        // given
         RecruitBoard recruitBoard = new RecruitBoard();
         recruitBoardRepository.save(recruitBoard);
 
-        // when: recruitBoard 객체를 삭제
+        // when
         recruitBoardRepository.delete(recruitBoard);
 
-        // then: 삭제된 recruitBoard 객체를 조회하여 존재하지 않음을 검증
+        // then
         Optional<RecruitBoard> findRecruitBoard = recruitBoardRepository.findById(recruitBoard.getId());
-        assertFalse(findRecruitBoard.isPresent());
+        assertFalse(findRecruitBoard.isPresent()); // 삭제된 RecruitBoard가 존재하지 않는지 확인
     }
 
     @Test
     void update() {
-        // given: recruitBoard 객체를 생성 및 저장
+        // given
         Member member = new Member();
         memberRepository.save(member);
 
@@ -64,26 +68,31 @@ class RecruitBoardRepositoryTest {
         recruitBoard.createRecruitBoard(member);
         recruitBoardRepository.save(recruitBoard);
 
-        // when: recruitBoard 객체의 내용을 업데이트하고 저장
-        Member newMember = new Member();
-        memberRepository.save(newMember);
-        recruitBoard.createRecruitBoard(newMember);
+        LocalDateTime beforeUpdate = recruitBoard.getModified_dt();
+
+        // when
+        recruitBoard.setTitle("Updated Title"); // 제목을 수정하는 것으로 변경
         recruitBoardRepository.save(recruitBoard);
 
-        // then: 업데이트된 recruitBoard 객체를 조회하여 검증
+        // 엔티티 상태를 강제로 갱신하도록 변경
+        em.flush();
+        em.clear();
+
+        // then
         Optional<RecruitBoard> findRecruitBoard = recruitBoardRepository.findById(recruitBoard.getId());
-        assertTrue(findRecruitBoard.isPresent());
-        assertEquals(newMember, findRecruitBoard.get().getMember());
+        assertTrue(findRecruitBoard.isPresent()); // 수정된 RecruitBoard가 존재하는지 확인
+        assertEquals("Updated Title", findRecruitBoard.get().getTitle()); // 수정된 제목이 올바른지 확인
+        assertNotEquals(beforeUpdate, findRecruitBoard.get().getModified_dt());  // 수정 시간이 변경되었는지 확인
     }
 
     @Test
     void findById_NotFound() {
-        // given: 존재하지 않는 ID로 조회 시도
+        // given
 
-        // when: 조회 시도
+        // when
         Optional<RecruitBoard> findRecruitBoard = recruitBoardRepository.findById(999L);
 
-        // then: 조회 결과가 존재하지 않음을 검증
-        assertFalse(findRecruitBoard.isPresent());
+        // then
+        assertFalse(findRecruitBoard.isPresent()); // 존재하지 않는 ID로 조회 시 RecruitBoard가 존재하지 않는지 확인
     }
 }

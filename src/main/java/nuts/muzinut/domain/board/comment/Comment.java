@@ -44,4 +44,9 @@ public class Comment extends BaseTimeEntity {
         this.content = content;
         member.getComments().add(this);
     }
+
+    // 댓글 내용 수정 메서드
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

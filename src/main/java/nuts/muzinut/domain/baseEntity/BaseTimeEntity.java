@@ -18,11 +18,13 @@ public abstract class BaseTimeEntity {
     public void prePersist() {
         this.created_dt = LocalDateTime.now();
         this.modified_dt = LocalDateTime.now();
+        System.out.println("Created created_dt: " + this.created_dt);
     }
 
     @PreUpdate  // 엔티티가 수정될 때마다 수정 시간을 자동으로 기록
     public void preUpdate() {
         this.modified_dt = LocalDateTime.now();
+        System.out.println("Updated modified_dt: " + this.modified_dt);
     }
 }
 

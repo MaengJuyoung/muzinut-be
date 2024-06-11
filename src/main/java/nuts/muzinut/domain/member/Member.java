@@ -7,6 +7,7 @@ import lombok.Setter;
 import nuts.muzinut.domain.board.Bookmark;
 import nuts.muzinut.domain.board.Like;
 import nuts.muzinut.domain.board.Lounge;
+import nuts.muzinut.domain.board.admin.AdminBoard;
 import nuts.muzinut.domain.board.recruit.RecruitBoard;
 import nuts.muzinut.domain.chat.ChatMember;
 import nuts.muzinut.domain.chat.Message;
@@ -67,6 +68,9 @@ public class Member extends BaseTimeEntity {
     private List<Follow> followings = new ArrayList<>();
 
     // 게시판
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<AdminBoard> adminBoards = new ArrayList<>();
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Lounge> lounges = new ArrayList<>();
 

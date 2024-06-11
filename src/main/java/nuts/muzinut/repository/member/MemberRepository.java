@@ -6,6 +6,7 @@ import nuts.muzinut.domain.member.Member;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class MemberRepository {
@@ -15,6 +16,10 @@ public class MemberRepository {
 
     public void save(Member member){
         em.persist(member);
+    }
+
+    public Optional<Member> findById(Long id) {
+        return Optional.ofNullable(em.find(Member.class, id));
     }
 
     public Member findOne(Long id){

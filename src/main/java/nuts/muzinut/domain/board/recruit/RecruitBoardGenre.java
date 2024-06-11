@@ -27,4 +27,8 @@ public class RecruitBoardGenre extends BaseBoardEntity {
         this.recruitBoard = recruitBoard;
         recruitBoard.getGenres().add(this);
     }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
 }

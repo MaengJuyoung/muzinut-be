@@ -16,7 +16,7 @@ import java.util.List;
 public class AdminBoard extends BaseBoardEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "admin_board_id")
     private Long id;
 
@@ -28,4 +28,13 @@ public class AdminBoard extends BaseBoardEntity {
 
     @OneToMany(mappedBy = "adminBoard", cascade = CascadeType.ALL)
     private List<AdminUploadFile> uploadFiles = new ArrayList<>();
+
+    // 생성자
+    public AdminBoard(Member member, String content) {
+        this.member = member;
+        this.content = content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
 }
