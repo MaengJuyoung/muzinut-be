@@ -3,7 +3,7 @@ package nuts.muzinut.domain.board;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nuts.muzinut.domain.member.Member;
+import nuts.muzinut.domain.member.User;
 
 @Entity
 @Table(name = "likes")
@@ -15,26 +15,23 @@ public class Like {
     @Column(name = "likes_id")
     private Long id;
 
-    @Column(name = "board_id")
-    private Long boardId;
-
-    @Column(name = "board_type")
-    @Enumerated(EnumType.STRING)
-    private BoardType boardType;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     /**
-     * @param boardId: 좋아요를 누른 게시판 pk
-     * @param boardType: 좋아요를 누른 게시판 타입 (팀 모집, 음악...)
-     * @param member: 좋아요를 누른 회원
+     * 연관 관계 메서드
+     * @param user: 좋아요를 누른 사용자
+     * @param board: 좋아요를 누른 게시판
      */
-    public Like(Long boardId, BoardType boardType, Member member) {
-        this.boardId = boardId;
-        this.boardType = boardType;
-        this.member = member;
-        member.getLikeList().add(this);
+    public void addLike(User user, Board board) {
+        this.user = user;
+        this.board = board;
+        user.getLikeList().add(this);
+        board.getLikes().add(this);
     }
 }
